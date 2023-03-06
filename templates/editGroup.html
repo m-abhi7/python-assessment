@@ -1,0 +1,89 @@
+{% extends "index.html" %}
+{% block content %}
+
+<div class="container">
+
+  <div class="row">
+    <div class="col-10">
+	  <h1>Hi {{ username }}!</h1>	  
+	  <h6>you are editing details for {{ group.groupName }}</h6>	  
+    </div>
+    <div class="col-2">
+		<form action="{{ url_for('logout') }}" method="POST">
+		  <button type="submit" class="btn btn-primary">Logout</button>
+		</form>
+    </div>
+  </div>
+  
+	<br>
+	
+	<div class="row">	
+		<div class="col-6">
+			<table class="table table-hover table-bordered">
+				<thead>
+				  <tr>
+					<th>Users of {{ group.groupName }}</th>
+				  </tr>
+				</thead>
+				<tbody>
+				  {% for inGroupUser in inGroupUsers %}
+					<tr>
+					  <td>{{ inGroupUser.username }}</td>
+					</tr>
+				  {% endfor %}
+				</tbody>
+			</table>
+		</div>  
+	
+		<div class="col-6">
+			<h6>Add members to groups</h6>
+			<form action="{{ url_for('addUserToGroup', groupID=group.id) }}" method="POST">			
+			<div class="input-group mb-3">
+				  <select class="form-select" id="addUserID" name="addUserID">
+					{% for notInGroupUser in notInGroupUsers %}
+						<option value="{{ notInGroupUser.id }}">{{ notInGroupUser.username }}</option>
+					{% endfor %}
+				  </select>
+				  <button class="btn btn-primary" type="submit">Add</button>
+			<br>	
+			</div>
+			{% with messages = get_flashed_messages() %}
+				{% if messages %}
+					<ul class=flashes>
+						{% for message in messages %}
+						<li>{{ message }}</li>
+						{% endfor %}
+					</ul>
+				{% endif %}
+			{% endwith %}	
+			<br>		
+			</form>
+			
+			<h6>Remove members from group</h6>
+			<form action="{{ url_for('removeUserFromGroup', groupID=group.id) }}" method="POST">			
+			<div class="input-group mb-3">
+				  <select class="form-select" id="removeUserID", name="removeUserID">
+					{% for inGroupUser in inGroupUsers %}
+						<option value="{{ inGroupUser.id }}">{{ inGroupUser.username }}</option>
+					{% endfor %}
+				  </select>
+				  <button class="btn btn-primary" type="submit">Remove</button>
+				<br>
+			</div>
+				{% with messages = get_flashed_messages() %}
+				{% if messages %}
+					<ul class=flashes>
+						{% for message in messages %}
+						<li>{{ message }}</li>
+						{% endfor %}
+					</ul>
+				{% endif %}
+			{% endwith %}	
+			<br>		
+			</form>
+		</div>
+		
+	</div>  
+</div>
+
+{% endblock %}

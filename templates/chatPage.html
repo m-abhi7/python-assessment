@@ -1,0 +1,74 @@
+{% extends "index.html" %}
+{% block content %}
+
+<div class="container">
+
+  <div class="row">
+    <div class="col-10">
+	  <h1>Hi {{ username }}!</h1>	  
+	  <h3>you are chatting with {{ user.username }}</h3>	  
+    </div>
+    <div class="col-2">
+		<form action="{{ url_for('logout') }}" method="POST">
+		  <button type="submit" class="btn btn-primary">Logout</button>
+		</form>
+    </div>
+  </div>
+  
+	<div class="row">
+		<div class="col-12">
+			<script type="text/javascript">
+			$(document).ready(function() {
+
+				var socket = io.connect('http://' + document.domain + ':' + location.port);
+
+				socket.on('connect', function() {
+					socket.send('User has connected!');
+				});
+
+				socket.on('message', function(msg) {
+					console.log('Received message');
+				});
+				
+				var privateSocket = io('http://' + document.domain + ':' + location.port + '/private');
+				$(document).ready(function () {
+					privateSocket.emit('username', "{{ username }}");	
+				});
+
+				$('#sendbutton').on('keypress click', function(e){
+					if (e.which === 13 || e.type === 'click') {
+						var toUser = "{{ user.username }}";
+						var messageText = $('#myMessage').val();
+						var fromUser = "{{ username }}";
+						$('#myMessage').val('');
+						$('#messageHolder').append('<span class="fw-semibold"> {{ username }} </span> : ' + messageText + '<br>');
+						privateSocket.emit('privateMessage', {'toUser' : toUser, 'messageText' : messageText, 'fromUser':fromUser});
+				}});
+				
+				$('#myMessage').keypress(function(e){
+					if(e.which == 13){
+					$('#sendbutton').click();
+				}});
+				
+				privateSocket.on('newPrivateMessage', function(msg){
+				$('#messageHolder').append('<span class="fw-semibold">' + msg.fromUser + '</span> : ' + msg.messageText + ' <br>');
+				});
+
+			});
+			</script>
+
+			<div id="messageHolder">
+			</div>
+			<br>		
+
+			<div class="input-group mb-3">			
+				<input type="text" class="form-control" placeholder="Enter message" id="myMessage">
+				<button type="submit" class="btn btn-primary" id="sendbutton">Send</button>
+			</div>
+		</div>
+	</div>
+
+  
+</div>
+
+{% endblock %}

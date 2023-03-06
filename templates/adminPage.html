@@ -1,0 +1,78 @@
+{% extends "index.html" %}
+{% block content %}
+
+<div class="container">
+
+  <div class="row">
+    <div class="col-10">
+	  <h1>Hi {{ username }}!</h1>	  
+    </div>
+    <div class="col-2">
+		<form action="{{ url_for('logout') }}" method="POST">
+		  <button type="submit" class="btn btn-primary">Logout</button>
+		</form>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-6">
+
+<table class="table table-hover table-bordered">
+    <thead>
+      <tr>
+        <th>Username</th>
+        <th>Is Admin</th>
+        <th>Edit</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for user in users %}
+        <tr>
+          <td>{{ user.username }}</td>
+          <td>{{ user.is_admin }}</td>
+		  <td> <a href="{{ url_for('edit_user', user_id=user.id ) }}" >Edit</a> </td>		 
+		</tr>
+      {% endfor %}
+    </tbody>
+</table>
+    </div>
+    <div class="col-6">
+      <thead><b>Create new user</b></thead>
+		<form action="{{ url_for('create') }}" method="POST">
+		<div class="input-group mb-3">
+		  <span class="input-group-text" id="newUsernameAddOn">Username</span>
+		  <input type="text" name = "newUsername" class="form-control" placeholder="Username">
+		</div>
+		  
+		<div class="input-group mb-3">
+		  <span class="input-group-text" id="newPasswordAddOn">Password</span>
+		  <input type="password" name = "newPassword" class="form-control" placeholder="Password">
+		</div>
+		
+		<div class="input-group mb-3">
+		  <label class="input-group-text" for="isAdmin">Admin</label>
+		  <select class="form-select" id="isAdmin" name="isAdmin">
+			<option value="0">No</option>
+			<option value="1">Yes</option>
+		  </select>
+		</div>
+		
+		<div class="input-group mb-3">
+		  <button type="submit" class="btn btn-primary">Create</button>
+		</div>
+		</form>
+			{% with messages = get_flashed_messages() %}
+				{% if messages %}
+					<ul class=flashes>
+						{% for message in messages %}
+						<li>{{ message }}</li>
+						{% endfor %}
+					</ul>
+				{% endif %}
+			{% endwith %}		
+    </div>
+  </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends "index.html" %}
+{% block content %}
+
+<div class="container">
+
+  <div class="row">
+    <div class="col-10">
+	  <h1>Hi {{ username }}!</h1>
+    </div>
+    <div class="col-2">
+		<form action="{{ url_for('logout') }}" method="POST">
+		  <button type="submit" class="btn btn-primary">Logout</button>
+		</form>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-12">		
+		<h6>Editing details for user : {{user.username}}</h6>
+		
+		<form action="{{ url_for('edit_user', user_id=user.id) }}" method="POST">
+		<div class="input-group mb-3">
+		  <span class="input-group-text" id="editUsernameAddOn">Username</span>
+		  <input type="text" name = "editUsername" class="form-control" placeholder="Username">
+		</div>
+		  
+		<div class="input-group mb-3">
+		  <span class="input-group-text" id="editPasswordAddOn">Password</span>
+		  <input type="password" name = "editPassword" class="form-control" placeholder="Password">
+		</div>
+		
+		<div class="input-group mb-3">
+		  <label class="input-group-text" for="isAdmin">Admin</label>
+		  <select class="form-select" id="isAdmin" name="isAdmin">
+			<option value="0">No</option>
+			<option value="1">Yes</option>
+		  </select>
+		</div>
+		
+		<div class="input-group mb-3">
+		  <button type="submit" class="btn btn-primary">Edit</button>
+		</div>
+		</form>
+		
+    </div>
+  </div>
+</div>
+
+{% endblock %}
